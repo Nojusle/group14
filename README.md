@@ -30,6 +30,7 @@ to login or edit the content go to:
 http://127.0.0.1:8000/admin
 
 Username: admin
+
 Password: pasword123
 
 

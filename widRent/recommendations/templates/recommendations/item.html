@@ -1,0 +1,22 @@
+{% extends 'recommendations/base.html' %}
+{% block recom_item %}active{% endblock %}
+{% block recom %}
+
+<div class="recom">
+	<h1>Your recommendations</h1>
+	<form method="POST" action=".">
+		{% csrf_token %}
+		<input type="submit" name="update" value="update">
+	</form>
+	<div class="widget__contaier">
+		{% for angle, obj in instance %}
+		{% include 'widgets/widget.html' %}
+		{% empty %}
+		<p>Sorry we have nothing to offer for you now</p>
+		{% endfor %}
+		<div class="fake"></div>
+		<div class="fake"></div>
+	</div>
+
+</div>
+{% endblock %}

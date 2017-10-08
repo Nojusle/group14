@@ -1,0 +1,17 @@
+
+<a href='{{ obj.get_abolute_url }}' class="widget">
+	<img src="{{obj.image.url}}">
+	<div class="txt">
+		<h3>{{ obj.title }}</h3>
+		<small class="param">
+			<div>
+				<div>shape: <b>{{ obj.shape }}</b></div>
+				<div>color: <b>{{obj.color}}</b></div>
+			</div>
+			<div>
+				<div>height: <b>{{obj.height}} mm</b></div>
+				<div>width: <b>{{obj.width}} mm</b></div>
+			</div>
+		</small>
+	</div>
+</a>

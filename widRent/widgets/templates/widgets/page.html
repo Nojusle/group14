@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<div class="page">
+	<div class="img">
+		<img src="{{ obj.image.url }}">
+	</div>
+
+	<div class="txt">
+		<div class="title">
+			<h1>{{obj.title}}</h1>
+		</div>
+		<div class="params">
+			<div>
+				<div>shape: <b>{{ obj.shape }}</b></div>
+				<div>color: <b>{{obj.color}}</b></div>
+			</div>
+			<div>
+				<div>height: <b>{{obj.height}} mm</b></div>
+				<div>width: <b>{{obj.width}} mm</b></div>
+			</div>
+
+		</div>
+		<div class="like__section">
+			<p>
+				Have you rented this widget in the past? If yes, let us know
+			</p>
+
+			<div class="likes">
+				<a class="like-btn" data-href='{{obj.get_like_url}}'>
+					like <span class="count">{{obj.liked.count }}</span>
+				</a>
+				<a class="unmark-btn" data-href='{{obj.get_unmark_url}}'>
+					unmark
+				</a>
+				<a class="dislike-btn" data-href='{{obj.get_dislike_url}}'>
+					dislike <span class="count">{{obj.disliked.count }}</span>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="nav">
+	<a href="{%url 'recom:user'%}" class="{% block recom_user %}{% endblock recom_user %}">
+		User matching
+	</a>
+	<a href="{%url 'recom:item'%}" class="{% block recom_item %}{% endblock recom_item %}">
+		Item matching
+	</a>
+</div>
+{% block recom %}
+
+{% endblock %}
+
+{% endblock %}

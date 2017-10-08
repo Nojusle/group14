@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<div class="widget__contaier">
+	{% for obj in instance %}
+	{% include 'widgets/widget.html' %}
+	{% endfor %}
+	<div class="fake"></div>
+	<div class="fake"></div>
+</div>
+
+{% endblock %}

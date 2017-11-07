@@ -4,9 +4,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication, permissions, status
 
+from django.db.models import F
+
+
+
+
 
 def index(request):
-    instance = Widget.objects.all()
+
+    instance = Widget.objects.annotate(available=F('quantity')-F('borrowed'))
     context = {
         'instance': instance,
     }
@@ -15,11 +21,32 @@ def index(request):
 
 def page(request, pk):
     obj = get_object_or_404(Widget,pk=pk)
+    if obj:
+        user = request.user
+        if user.is_authenticated():
+            if request.method == 'POST':
+                print('postlkmlk')
+                rentred = request.POST.get('RENT')
+                if rentred:
+                    obj.add_to_basket(user)
+                    print('rented')
 
-    context = {
-        'obj': obj,
-    }
-    return render(request, 'widgets/page.html', context)
+                returned = request.POST.get('RETURN')
+                if returned:
+                    obj.return_it(user)
+                    print('returned')
+
+            obj.user_is_renting = obj.user_active_renter(user)
+            obj.user_has_rented = obj.user_unactive_renter(user)
+
+
+            obj.available = obj.quantity - obj.borrowed
+
+        context = {
+            'obj': obj,
+        }
+        return render(request, 'widgets/page.html', context)
+
 
 def contacts(request):
     return render(request, 'contacts.html')

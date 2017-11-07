@@ -1,6 +1,9 @@
 import numpy as np
 from matching_settings import liked_item, dislike_item, not_rated_item
 
+from datetime import datetime
+
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -54,16 +57,15 @@ class WidgetManager(models.Manager):
 
 class Widget(models.Model):
     title     = models.CharField(max_length=250, db_index=True)
-    shape     = models.CharField(max_length=250, blank=True, null=True)
-    height    = models.IntegerField(default=0, blank=True, null=True)
-    width     = models.IntegerField(default=0, blank=True, null=True)
-    color     = models.CharField(max_length=250, blank=True, null=True)
+
+    quantity  = models.IntegerField(default=0)
+    borrowed  = models.IntegerField(default=0)
 
     image     = models.ImageField(upload_to='widgets', null=True, blank=True)
 
     liked     = models.ManyToManyField(User, db_index=True, blank=True, related_name='likes')
     disliked  = models.ManyToManyField(User, db_index=True, blank=True, related_name='dislikes')
-
+    catgory   = models.ManyToManyField('Category', blank=True)
     objects   = WidgetManager()
 
     def __str__(self):
@@ -185,3 +187,77 @@ class Widget(models.Model):
 
             return liked, disliked
         return None, None
+
+
+
+    def rent_it(self, user):
+        if self.quantity - self.borrowed > 0:
+            new_rent = Rent(widget=self,
+                            user=user)
+            new_rent.save()
+            self.borrowed += 1
+            self.save()
+
+    def return_it(self, user):
+        if self.user_active_renter(user):
+
+            rent_obj = self.rent_set.filter(user=user, active=True).first()
+
+            rent_obj.active = False
+            rent_obj.returned = datetime.now()
+            rent_obj.save()
+
+            self.borrowed += -1
+            self.save()
+
+
+    def add_to_basket(self, user):
+        try:
+            user.basket
+        except:
+            basket = Basket(user=user)
+            basket.save()
+
+        basket = user.basket
+        basket.widgets.add(self)
+
+        
+    def user_active_renter(self, user):
+        return self.rent_set.filter(user=user, active=True).exists()
+
+    def user_unactive_renter(self, user):
+        return self.rent_set.filter(user=user, active=False).exists()
+
+class Category(models.Model):
+    title     = models.CharField(max_length=250, db_index=True)
+
+
+
+
+
+class Basket(models.Model):
+    user   = models.OneToOneField(User, db_index=True, blank=True, null=True, related_name='basket')
+    widgets     = models.ManyToManyField('Widget', db_index=True, blank=True)
+
+    def __str__(self):
+        return self.widget.title + ' - ' + self.user.username
+
+
+
+
+class Rent(models.Model):
+    active = models.BooleanField(default=True)
+
+    widget = models.ForeignKey('Widget', null=True)
+    user   = models.ForeignKey(User, db_index=True)
+
+    rented   = models.DateTimeField(auto_now_add=True)
+    returned = models.DateTimeField(blank=True, null=True)
+
+
+    def __str__(self):
+        return self.widget.title + ' - ' + self.user.username
+
+
+
+

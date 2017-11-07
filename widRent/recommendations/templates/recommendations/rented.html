@@ -1,0 +1,42 @@
+{% extends 'recommendations/base.html' %}
+{% block rented %}active{% endblock %}
+{% block recom %}
+
+
+<div class="recom">
+	<h1>You currently renting</h1>
+	<div class="widget__contaier">
+		{% for obj in instance %}
+		{% include 'widgets/widget.html' %}
+		{% empty %}
+		<p>Currently you are not renting any movies</p>
+		{% endfor %}
+		<div class="fake"></div>
+		<div class="fake"></div>
+	</div>
+	<h1>Your rent history</h1>
+	<div class="history">
+		{% for obj in history %}
+
+		<div>
+			<img src="obj.widget.image.url">
+			<div class="title">
+				title: {{obj.widget.title}}
+			</div>
+			<div class="title">
+				taken at: {{obj.rented}}
+			</div>
+			<div class="title">
+				returned at: {{obj.returned}}
+			</div>
+		</div>
+
+
+		{% empty %}
+		<p>You are not renting eny movies</p>
+		{% endfor %}
+		<div class="fake"></div>
+		<div class="fake"></div>
+	</div>
+</div>
+{% endblock %}

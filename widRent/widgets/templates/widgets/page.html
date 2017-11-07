@@ -11,33 +11,61 @@
 			<h1>{{obj.title}}</h1>
 		</div>
 		<div class="params">
+
 			<div>
-				<div>shape: <b>{{ obj.shape }}</b></div>
-				<div>color: <b>{{obj.color}}</b></div>
+				<div>available: <b>{{ obj.available }}</b></div>
+				<div>categories: <b>{{obj.categories.all}}</b></div>
 			</div>
+
 			<div>
-				<div>height: <b>{{obj.height}} mm</b></div>
-				<div>width: <b>{{obj.width}} mm</b></div>
+				<div>likes: <b>{{obj.liked.count}}</b></div>
+				<div>dislikes: <b>{{obj.disliked.count}}</b></div>
 			</div>
 
 		</div>
-		<div class="like__section">
-			<p>
-				Have you rented this widget in the past? If yes, let us know
-			</p>
 
-			<div class="likes">
-				<a class="like-btn" data-href='{{obj.get_like_url}}'>
-					like <span class="count">{{obj.liked.count }}</span>
-				</a>
-				<a class="unmark-btn" data-href='{{obj.get_unmark_url}}'>
-					unmark
-				</a>
-				<a class="dislike-btn" data-href='{{obj.get_dislike_url}}'>
-					dislike <span class="count">{{obj.disliked.count }}</span>
-				</a>
+		{% if user.is_authenticated %}
+
+			<form method="POST" action="">{% csrf_token %}
+
+				<label>Click this button to add this widget in your shopping basket</label>
+			
+				<input type="submit" name="RENT" value='RENT'>
+			</form>
+
+			{% if obj.user_is_renting %}
+				<p>Currently you are rentnting this movie</p>
+
+				<form method="POST" action="">{% csrf_token %}
+
+					<label>To return this movie click the button</label>
+				
+					<input type="submit" name="RETURN" value='RETURN'>
+				</form>
+
+			{% endif %}
+
+			{% if obj.user_has_rented %}
+			<div class="like__section">
+
+				<p>
+					Have you rented this widget in the past? If yes, let us know
+				</p>
+
+				<div class="likes">
+					<a class="like-btn" data-href='{{obj.get_like_url}}'>
+						like <span class="count">{{obj.liked.count }}</span>
+					</a>
+					<a class="unmark-btn" data-href='{{obj.get_unmark_url}}'>
+						unmark
+					</a>
+					<a class="dislike-btn" data-href='{{obj.get_dislike_url}}'>
+						dislike <span class="count">{{obj.disliked.count }}</span>
+					</a>
+				</div>
 			</div>
-		</div>
+			{% endif %}
+		{% endif %}
 	</div>
 </div>
 

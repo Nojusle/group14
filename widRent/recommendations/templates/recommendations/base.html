@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 {% block body %}
 <div class="nav">
+
+	<a href="{%url 'recom:basket'%}" class="{% block basket %}{% endblock basket %}">
+		basket
+	</a>
+
+
+	<a href="{%url 'recom:rented'%}" class="{% block rented %}{% endblock rented %}">
+		rented
+	</a>
+
 	<a href="{%url 'recom:user'%}" class="{% block recom_user %}{% endblock recom_user %}">
 		User matching
 	</a>

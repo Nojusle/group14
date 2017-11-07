@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
 from django.contrib.auth.models import User
-from widgets.models import Widget
+from widgets.models import Widget, Rent, Basket
 from .utils import calc_angle
-from .models import Angle
 from matching_settings import dislike_item, liked_item, not_rated_item, recommend_people_count
 
 from django.db.models import Prefetch, Count
+
+from django.db.models import Count, F, Q, Case, When, Prefetch, Value, CharField
 
 def user(request):
     user = request.user
@@ -106,6 +107,66 @@ def item(request):
 
 
 
+
+def rented(request):
+    user = request.user
+    if user.is_authenticated():
+        instance = Widget.objects.filter(rent__user=user, rent__active=True)
+        history = Rent.objects.filter(user=user, active=False)
+
+
+
+        # .annotate(user_rating=Case(
+        #                                     When(widget__liked=user,then=Value('liked')),
+        #                                     When(widget__disliked=user,then=Value('disliked')),
+        #                                     default=Value('Not rated'),
+        #                                     output_field=CharField()
+        #                                     ))
+
+
+
+
+# Client.objects.annotate(
+# ...     discount=Case(
+# ...         When(account_type=Client.GOLD, then=Value('5%')),
+# ...         When(account_type=Client.PLATINUM, then=Value('10%')),
+# ...         default=Value('0%'),
+# ...         output_field=CharField(),
+# ...     ),
+
+        context = {
+            'instance': instance,
+            'history': history
+        }
+
+        return render(request, 'recommendations/rented.html', context)
+
+    return redirect('widgets:index')
+
+
+
+def basket(request):
+    user = request.user
+    if user.is_authenticated():
+        try:
+            instance = user.basket.widgets.all()
+        except:
+            basket = Basket(user=user)
+            basket.save()
+            instance = {}
+
+        if request.method == 'POST':
+            for obj in instance:
+                obj.rent_it(user)
+                user.basket.widgets.remove(obj)
+
+
+            return redirect('recom:rented')
+
+        context = {
+            'instance': instance,
+        }
+        return render(request, 'recommendations/basket.html', context)
 
 
 

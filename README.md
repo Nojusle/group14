@@ -1,6 +1,14 @@
 # group14
 
 to run the project 
+Pre-requisites: pip3 install
+Django==1.11.6
+djangorestframework==3.7.0
+numpy==1.13.3
+olefile==0.44
+Pillow==4.3.0
+pytz==2017.2
+django_extensions==1.9.7
 
 1. download the file
 
